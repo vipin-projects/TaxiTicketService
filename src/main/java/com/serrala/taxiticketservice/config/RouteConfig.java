@@ -3,6 +3,9 @@ package com.serrala.taxiticketservice.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
 public class RouteConfig {
 	List<Route> routeMap = new ArrayList<Route>();
 

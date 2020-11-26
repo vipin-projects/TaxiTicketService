@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
 import com.serrala.taxiticketservice.controller.TicketBookingController;
+import com.serrala.taxiticketservice.exception.RouteNotFoundException;
 import com.serrala.taxiticketservice.model.BookingRequest;
 import com.serrala.taxiticketservice.model.TicketResponse;
 
@@ -19,10 +20,45 @@ public class TicketBookingControllerTests {
 	TicketBookingController ticketBookingController;
 	
 	@Test
-	public void bookTicketForSingleTraveller() {
-		BookingRequest bookingRequest = new BookingRequest("PUNE", "MUMBAI", 2);
+	public void bookTicketForSingleTraveller_WithDistanve() {
+		BookingRequest bookingRequest = new BookingRequest("PUNE", "MUMBAI", 1);
 		TicketResponse response = ticketBookingController.bookTicket(bookingRequest);
-		assertThat(response).isEqualTo(buildResponse(bookingRequest));
+		assertThat(response.getDestination()).isEqualTo(buildResponse(bookingRequest).getDestination());
+	}
+	
+	@Test
+	public void bookTicketForSingleTraveller_WithFare() {
+		BookingRequest bookingRequest = new BookingRequest("PUNE", "MUMBAI", 1);
+		TicketResponse response = ticketBookingController.bookTicket(bookingRequest);
+		assertThat(response.getTotalCost()).isEqualTo(buildResponse(bookingRequest).getTotalCost());
+	}
+	
+	@Test
+	public void bookTicketForMultiTraveller_WithFare() {
+		BookingRequest bookingRequest = new BookingRequest("PUNE", "MUMBAI", 3);
+		TicketResponse response = ticketBookingController.bookTicket(bookingRequest);
+		assertThat(response.getTotalCost()).isEqualTo(buildResponse(bookingRequest).getTotalCost());
+	}
+	
+	@Test
+	public void bookTicketForSingleTraveller_WithRouteDoesNotExist() {
+		BookingRequest bookingRequest = new BookingRequest("PUNE", "DELHI", 1);
+		ticketBookingController.bookTicket(bookingRequest);
+	}
+	
+	@Test
+	public void bookTicketForSingleTraveller_printTicket() {
+		BookingRequest bookingRequest = new BookingRequest("PUNE", "NASIK", 2);
+		TicketResponse response = ticketBookingController.bookTicket(bookingRequest);
+		StringBuilder builder = new StringBuilder("Taxi Ticket\n");
+		builder.append("----------\n");
+		builder.append("Source: "+response.getSource());
+		builder.append("\nDestination: "+response.getDestination());
+		builder.append("\nKms: "+response.getDistance());
+		builder.append("\nNo. Of Travellers: "+response.getNoOfTravellers());
+		builder.append("\nTotal Fare: "+response.getTotalCost());
+		
+		System.out.println(builder.toString());
 	}
 	
 	public TicketResponse buildResponse(BookingRequest bookingRequest) {

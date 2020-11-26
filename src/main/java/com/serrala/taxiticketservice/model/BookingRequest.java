@@ -1,5 +1,10 @@
 package com.serrala.taxiticketservice.model;
 
+/**
+ * Model to handle the booking request
+ * @author Vipin
+ *
+ */
 public class BookingRequest {
 	String source;
 	String destination;

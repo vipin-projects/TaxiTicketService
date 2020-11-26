@@ -1,5 +1,10 @@
 package com.serrala.taxiticketservice.model;
 
+/**
+ * Model to handle the TicketResponse
+ * @author Vipin
+ *
+ */
 public class TicketResponse {
 	String source;
 	String destination;
